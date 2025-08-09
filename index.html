@@ -1,31 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enviar Ubicación</title>
-  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2em;
+    }
+    button {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      background-color: #0078D7;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <form action="https://formspree.io/f/xqalwaqy" method="POST" style="max-width: 400px; margin: auto; padding: 20px; background: #f4f4f4; border-radius: 10px;">
-    <h2 style="text-align: center;">📍 Enviar ubicación</h2>
-    <input type="text" name="location" id="location" required style="width: 100%; padding: 10px; margin: 10px 0;">
-    <button type="submit" style="width: 100%; padding: 10px; background-color: #0078D7; color: white; border: none; border-radius: 5px;">Enviar</button>
-  </form>
+  <h1>Enviar Ubicación</h1>
+  <p>Pulsa el botón para enviar tu ubicación actual por correo.</p>
+  <button onclick="enviarUbicacion()">📍 Enviar ubicación</button>
 
   <script>
-    navigator.geolocation.getCurrentPosition(function(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      document.getElementById('location').value = `https://www.google.com/maps?q=${lat},${lon}`;
-    });
+    function enviarUbicacion() {
+      if (!navigator.geolocation) {
+        alert("Tu navegador no permite geolocalización.");
+        return;
+      }
 
-    document.querySelector('form').addEventListener('submit', function() {
-      alert("✅ Ubicación enviada correctamente");
-    });
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
+      navigator.geolocation.getCurrentPosition(function (position) {
+        const lat = position.coords.latitude.toFixed(6);
+        const lon = position.coords.longitude.toFixed(6);
+        const enlace = `https://www.google.com/maps?q=${lat},${lon}`;
+        const asunto = encodeURIComponent("Parte de ubicación");
+        const cuerpo = encodeURIComponent(`Ubicación actual:\n${enlace}`);
+        const correo = `mailto:partes@securitymen.org?subject=${asunto}&body=${cuerpo}`;
+        window.location.href = correo;
+      }, function (error) {
+        alert("No se pudo obtener la ubicación: " + error.message);
+      });
     }
   </script>
 </body>
