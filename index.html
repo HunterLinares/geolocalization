@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enviar Ubicación</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <form action="https://formspree.io/f/xqalwaqy" method="POST" style="max-width: 400px; margin: auto; padding: 20px; background: #f4f4f4; border-radius: 10px;">
+    <h2 style="text-align: center;">📍 Enviar ubicación</h2>
+    <input type="text" name="location" id="location" required style="width: 100%; padding: 10px; margin: 10px 0;">
+    <button type="submit" style="width: 100%; padding: 10px; background-color: #0078D7; color: white; border: none; border-radius: 5px;">Enviar</button>
+  </form>
+
+  <script>
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      document.getElementById('location').value = `https://www.google.com/maps?q=${lat},${lon}`;
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+      alert("✅ Ubicación enviada correctamente");
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
